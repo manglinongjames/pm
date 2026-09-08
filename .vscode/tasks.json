@@ -1,0 +1,200 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "pm-part2-route-check",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe -c \"import json,time,urllib.request,sys;base='http://127.0.0.1:8000';\nready=False\nfor _ in range(80):\n    try:\n        with urllib.request.urlopen(base+'/api/health', timeout=2) as r:\n            if r.status==200:\n                ready=True\n                break\n    except Exception:\n        time.sleep(0.25)\nif not ready:\n    print('SERVER_NOT_READY');sys.exit(2)\nwith urllib.request.urlopen(base+'/api/health', timeout=5) as r:\n    b=r.read().decode('utf-8');print('health',r.status,b);assert json.loads(b)=={'status':'ok'}\nwith urllib.request.urlopen(base+'/api/hello', timeout=5) as r:\n    b=r.read().decode('utf-8');print('hello',r.status,b);assert json.loads(b)=={'message':'Hello from FastAPI'}\nwith urllib.request.urlopen(base+'/', timeout=5) as r:\n    b=r.read().decode('utf-8');print('index',r.status,'title=',('Project Management MVP' in b),'fetch=',('/api/hello' in b));assert 'Project Management MVP' in b and '/api/hello' in b\nprint('ALL_CHECKS_PASSED')\""
+		},
+		{
+			"label": "pm-part2-runtime-check",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe scripts/_part2_runtime_check.py"
+		},
+		{
+			"label": "pm-check-uvicorn-installed",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe -m pip show uvicorn"
+		},
+		{
+			"label": "pm-install-backend-runtime",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe -m pip install fastapi>=0.116.0 uvicorn[standard]>=0.35.0"
+		},
+		{
+			"label": "pm-install-backend-runtime-fixed",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe -m pip install 'fastapi>=0.116.0' 'uvicorn[standard]>=0.35.0'"
+		},
+		{
+			"label": "pm-part2-runtime-check",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe scripts/_part2_runtime_check.py"
+		},
+		{
+			"label": "pm-part2-shutdown-check",
+			"type": "shell",
+			"command": "c:/Users/mangl/.VIRTUALENVS/STOREFRONT-BTZWRJKC/Scripts/python.exe -c \"import urllib.request,sys;url='http://127.0.0.1:8000/api/health';\ntry:\n urllib.request.urlopen(url,timeout=2)\n print('STILL_UP');sys.exit(2)\nexcept Exception:\n print('SERVER_DOWN_CONFIRMED')\""
+		},
+		{
+			"label": "pm-docker-diagnostics",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Write-Host '--- winget list ---'; winget list --id Docker.DockerDesktop; Write-Host '--- where docker ---'; where.exe docker; Write-Host '--- appx package ---'; Get-AppxPackage -Name '*DockerDesktop*' | Select-Object Name, Version, InstallLocation; Write-Host '--- uninstall keys HKLM/HKCU ---'; Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' | Where-Object { $_.DisplayName -like '*Docker*' } | Select-Object DisplayName, InstallLocation, UninstallString; Write-Host '--- common paths ---'; Write-Host ('PF desktop=' + (Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe')); Write-Host ('PF cli=' + (Test-Path 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe')); Write-Host ('LA desktop=' + (Test-Path 'C:\\Users\\mangl\\AppData\\Local\\Programs\\Docker\\Docker\\Docker Desktop.exe')); Write-Host ('LA cli=' + (Test-Path 'C:\\Users\\mangl\\AppData\\Local\\Programs\\Docker\\Docker\\resources\\bin\\docker.exe'));\""
+		},
+		{
+			"label": "pm-part2-start-check",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\start-windows.ps1"
+		},
+		{
+			"label": "pm-part2-start-check",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:\\Trainings\\Agent AI\\projects\\pm\\scripts\\start-windows.ps1\""
+		},
+		{
+			"label": "pm-part2-start-check-abs",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/start-windows.ps1\""
+		},
+		{
+			"label": "pm-part2-endpoint-check",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"$h=(Invoke-WebRequest 'http://127.0.0.1:8000/api/health').Content; $x=(Invoke-WebRequest 'http://127.0.0.1:8000/api/hello').Content; $s=(Invoke-WebRequest 'http://127.0.0.1:8000/').StatusCode; Write-Host ('health=' + $h); Write-Host ('hello=' + $x); Write-Host ('rootStatus=' + $s)\""
+		},
+		{
+			"label": "pm-part2-endpoint-check-py",
+			"type": "shell",
+			"command": "py -c \"import urllib.request;print('health='+urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=5).read().decode());print('hello='+urllib.request.urlopen('http://127.0.0.1:8000/api/hello',timeout=5).read().decode());print('rootStatus='+str(urllib.request.urlopen('http://127.0.0.1:8000/',timeout=5).status))\""
+		},
+		{
+			"label": "pm-part2-stop-check",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/stop-windows.ps1\""
+		},
+		{
+			"label": "pm-backend-tests",
+			"type": "shell",
+			"command": "py -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-install-backend-deps-venv",
+			"type": "shell",
+			"command": "\"e:/Trainings/Agent AI/projects/pm/.venv/Scripts/python.exe\" -m pip install \"fastapi>=0.116.0\" \"uvicorn[standard]>=0.35.0\""
+		},
+		{
+			"label": "pm-install-backend-deps-venv",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m pip install 'fastapi>=0.116.0' 'uvicorn[standard]>=0.35.0'"
+		},
+		{
+			"label": "pm-install-backend-deps-venv-v2",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m pip install 'fastapi>=0.116.0' 'uvicorn[standard]>=0.35.0'"
+		},
+		{
+			"label": "pm-backend-tests-venv",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-frontend-unit-tests",
+			"type": "shell",
+			"command": "cd frontend && npm run test:unit"
+		},
+		{
+			"label": "pm-frontend-install",
+			"type": "shell",
+			"command": "cd frontend && npm ci"
+		},
+		{
+			"label": "pm-frontend-install-retry",
+			"type": "shell",
+			"command": "cd frontend && npm ci"
+		},
+		{
+			"label": "pm-frontend-unit-tests-run",
+			"type": "shell",
+			"command": "cd frontend && npm run test:unit"
+		},
+		{
+			"label": "pm-frontend-e2e-tests",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e"
+		},
+		{
+			"label": "pm-playwright-install",
+			"type": "shell",
+			"command": "cd frontend && npx playwright install chromium"
+		},
+		{
+			"label": "pm-frontend-e2e-tests-rerun",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e"
+		},
+		{
+			"label": "pm-part3-start",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/start-windows.ps1\""
+		},
+		{
+			"label": "pm-part3-route-check",
+			"type": "shell",
+			"command": "py -c \"import urllib.request; root=urllib.request.urlopen('http://127.0.0.1:8000/',timeout=10).read().decode('utf-8'); health=urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=10).read().decode('utf-8'); hello=urllib.request.urlopen('http://127.0.0.1:8000/api/hello',timeout=10).read().decode('utf-8'); print('root_has_kanban='+str('Kanban Studio' in root)); print('root_has_dnd='+str('Single Board Kanban' in root)); print('health='+health); print('hello='+hello)\""
+		},
+		{
+			"label": "pm-part3-stop",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/stop-windows.ps1\""
+		},
+		{
+			"label": "pm-backend-tests-venv-rerun",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-part3-stop-confirm",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/stop-windows.ps1\""
+		},
+		{
+			"label": "pm-part4-frontend-unit",
+			"type": "shell",
+			"command": "cd frontend && npm run test:unit"
+		},
+		{
+			"label": "pm-part4-frontend-e2e",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e"
+		},
+		{
+			"label": "pm-part4-start",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/start-windows.ps1\""
+		},
+		{
+			"label": "pm-part4-runtime-check",
+			"type": "shell",
+			"command": "py -c \"import urllib.request; root=urllib.request.urlopen('http://127.0.0.1:8000/',timeout=10).read().decode('utf-8'); health=urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=10).read().decode('utf-8'); hello=urllib.request.urlopen('http://127.0.0.1:8000/api/hello',timeout=10).read().decode('utf-8'); print('root_has_signin='+str('Sign in to continue' in root)); print('root_hides_board='+str('Kanban Studio' not in root)); print('health='+health); print('hello='+hello)\""
+		},
+		{
+			"label": "pm-part4-stop",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File \"E:/Trainings/Agent AI/projects/pm/scripts/stop-windows.ps1\""
+		},
+		{
+			"label": "pm-part4-regression-unit",
+			"type": "shell",
+			"command": "cd frontend && npm run test:unit"
+		},
+		{
+			"label": "pm-part4-regression-e2e",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e"
+		},
+		{
+			"label": "pm-part4-regression-e2e-rerun",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e"
+		}
+	]
+}

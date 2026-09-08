@@ -1,0 +1,46 @@
+Collecting fastapi
+  Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+Collecting uvicorn[standard]
+  Downloading uvicorn-0.52.4-py3-none-any.whl.metadata (6.6 kB)
+Collecting starlette>=0.46.0 (from fastapi)
+  Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+Requirement already satisfied: pydantic>=2.9.0 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from fastapi) (2.10.6)
+Requirement already satisfied: typing-extensions>=4.8.0 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from fastapi) (4.12.2)
+Collecting typing-inspection>=0.4.2 (from fastapi)
+  Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting click>=7.0 (from uvicorn[standard])
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: h11>=0.8 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from uvicorn[standard]) (0.14.0)
+Collecting httptools>=0.8.0 (from uvicorn[standard])
+  Downloading httptools-0.8.0-cp312-cp312-win_amd64.whl.metadata (3.7 kB)
+Requirement already satisfied: python-dotenv>=0.13 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from uvicorn[standard]) (1.0.1)
+Requirement already satisfied: pyyaml>=5.1 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from uvicorn[standard]) (6.0.2)
+Collecting watchfiles>=0.20 (from uvicorn[standard])
+  Downloading watchfiles-1.2.0-cp312-cp312-win_amd64.whl.metadata (5.0 kB)
+Collecting websockets>=13.0 (from uvicorn[standard])
+  Downloading websockets-17.1-cp312-cp312-win_amd64.whl.metadata (6.5 kB)
+Requirement already satisfied: annotated-types>=0.6.0 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from pydantic>=2.9.0->fastapi) (0.7.0)
+Requirement already satisfied: pydantic-core==2.27.2 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from pydantic>=2.9.0->fastapi) (2.27.2)
+Requirement already satisfied: anyio<5,>=3.6.2 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from starlette>=0.46.0->fastapi) (4.8.0)
+Collecting typing-extensions>=4.8.0 (from fastapi)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Requirement already satisfied: idna>=2.8 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from anyio<5,>=3.6.2->starlette>=0.46.0->fastapi) (3.10)
+Requirement already satisfied: sniffio>=1.1 in c:\users\mangl\.virtualenvs\storefront-btzwrjkc\lib\site-packages (from anyio<5,>=3.6.2->starlette>=0.46.0->fastapi) (1.3.1)
+Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading httptools-0.8.0-cp312-cp312-win_amd64.whl (90 kB)
+Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading watchfiles-1.2.0-cp312-cp312-win_amd64.whl (288 kB)
+Downloading websockets-17.1-cp312-cp312-win_amd64.whl (217 kB)
+Downloading uvicorn-0.52.4-py3-none-any.whl (79 kB)
+Installing collected packages: websockets, typing-extensions, httptools, click, annotated-doc, uvicorn, typing-inspection, watchfiles, starlette, fastapi
+  Attempting uninstall: typing-extensions
+    Found existing installation: typing_extensions 4.12.2
+    Uninstalling typing_extensions-4.12.2:
+      Successfully uninstalled typing_extensions-4.12.2
+Successfully installed annotated-doc-0.0.5 click-8.5.0 fastapi-0.141.1 httptools-0.8.0 starlette-1.6.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.52.4 watchfiles-1.2.0 websockets-17.1

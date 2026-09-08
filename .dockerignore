@@ -1,0 +1,13 @@
+.git
+.gitignore
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+backend/.venv/
+frontend/node_modules/
+frontend/.next/
+frontend/test-results/
+frontend/playwright-report/
