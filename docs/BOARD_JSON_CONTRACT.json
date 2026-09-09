@@ -1,0 +1,150 @@
+{
+  "contractVersion": "1.0.0",
+  "description": "Canonical board payload used by frontend, backend, and AI orchestration",
+  "boardState": {
+    "board": {
+      "id": "board-1",
+      "userId": "user-1",
+      "title": "My Board",
+      "columns": [
+        {
+          "id": "col-backlog",
+          "key": "backlog",
+          "title": "Backlog",
+          "position": 0,
+          "cards": [
+            {
+              "id": "card-1",
+              "title": "Align roadmap themes",
+              "details": "Draft quarterly themes with impact statements and metrics.",
+              "position": 0
+            }
+          ]
+        },
+        {
+          "id": "col-discovery",
+          "key": "discovery",
+          "title": "Discovery",
+          "position": 1,
+          "cards": []
+        },
+        {
+          "id": "col-progress",
+          "key": "progress",
+          "title": "In Progress",
+          "position": 2,
+          "cards": []
+        },
+        {
+          "id": "col-review",
+          "key": "review",
+          "title": "Review",
+          "position": 3,
+          "cards": []
+        },
+        {
+          "id": "col-done",
+          "key": "done",
+          "title": "Done",
+          "position": 4,
+          "cards": []
+        }
+      ]
+    },
+    "meta": {
+      "updatedAt": "2026-09-08T00:00:00Z"
+    }
+  },
+  "mutationContract": {
+    "request": {
+      "boardId": "board-1",
+      "operations": [
+        {
+          "op": "rename_column",
+          "columnId": "col-backlog",
+          "title": "Planned Work"
+        },
+        {
+          "op": "create_card",
+          "columnId": "col-progress",
+          "card": {
+            "id": "card-99",
+            "title": "Design empty state",
+            "details": "Add copy and visual treatment",
+            "position": 0
+          }
+        },
+        {
+          "op": "move_card",
+          "cardId": "card-1",
+          "fromColumnId": "col-backlog",
+          "toColumnId": "col-review",
+          "toPosition": 0
+        },
+        {
+          "op": "delete_card",
+          "cardId": "card-99",
+          "columnId": "col-progress"
+        }
+      ]
+    },
+    "response": {
+      "ok": true,
+      "board": {
+        "id": "board-1",
+        "userId": "user-1",
+        "title": "My Board",
+        "columns": [
+          {
+            "id": "col-backlog",
+            "key": "backlog",
+            "title": "Planned Work",
+            "position": 0,
+            "cards": []
+          },
+          {
+            "id": "col-review",
+            "key": "review",
+            "title": "Review",
+            "position": 3,
+            "cards": [
+              {
+                "id": "card-1",
+                "title": "Align roadmap themes",
+                "details": "Draft quarterly themes with impact statements and metrics.",
+                "position": 0
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    }
+  },
+  "aiExchangeContract": {
+    "request": {
+      "board": "boardState.board",
+      "conversation": [
+        {
+          "role": "user",
+          "message": "Move the roadmap card to review"
+        }
+      ],
+      "userPrompt": "Can you update the board?"
+    },
+    "response": {
+      "assistantMessage": "Moved the roadmap card to Review.",
+      "boardUpdate": {
+        "operations": [
+          {
+            "op": "move_card",
+            "cardId": "card-1",
+            "fromColumnId": "col-backlog",
+            "toColumnId": "col-review",
+            "toPosition": 0
+          }
+        ]
+      }
+    }
+  }
+}

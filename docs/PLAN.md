@@ -77,36 +77,36 @@ This plan is the execution checklist for the MVP. Work must stay inside stated r
 ## Part 5: Database Modeling
 
 ### Checklist
-- [ ] Propose SQLite schema for users, board, columns, cards, and optional chat history.
-- [ ] Define a JSON representation for board state exchange with AI/backend APIs.
-- [ ] Document schema decisions and tradeoffs in docs/.
-- [ ] Request user sign-off before schema implementation in runtime paths.
+- [x] Propose SQLite schema for users, board, columns, cards, and optional chat history.
+- [x] Define a JSON representation for board state exchange with AI/backend APIs.
+- [x] Document schema decisions and tradeoffs in docs/.
+- [x] Request user sign-off before schema implementation in runtime paths.
 
 ### Tests
-- [ ] Validate schema supports one board per user while allowing future multi-user expansion.
-- [ ] Validate JSON example can represent rename, create, delete, and move operations.
+- [x] Validate schema supports one board per user while allowing future multi-user expansion.
+- [x] Validate JSON example can represent rename, create, delete, and move operations.
 
 ### Success Criteria
-- [ ] User approves schema and JSON contract.
-- [ ] Schema is minimal and sufficient for Parts 6-10.
+- [x] User approves schema and JSON contract.
+- [x] Schema is minimal and sufficient for Parts 6-10.
 
 ## Part 6: Backend Kanban API
 
 ### Checklist
-- [ ] Implement SQLite initialization on startup if DB file does not exist.
-- [ ] Add API routes to fetch board state for authenticated user.
-- [ ] Add API routes to mutate board (rename column, create/edit/delete/move card).
-- [ ] Add input validation and consistent error responses.
-- [ ] Keep route design simple and stable for frontend usage.
+- [x] Implement SQLite initialization on startup if DB file does not exist.
+- [x] Add API routes to fetch board state for authenticated user.
+- [x] Add API routes to mutate board (rename column, create/edit/delete/move card).
+- [x] Add input validation and consistent error responses.
+- [x] Keep route design simple and stable for frontend usage.
 
 ### Tests
-- [ ] Backend unit tests for each route success path.
-- [ ] Backend unit tests for validation and not-found/error paths.
-- [ ] Persistence tests proving data survives app restart.
+- [x] Backend unit tests for each route success path.
+- [x] Backend unit tests for validation and not-found/error paths.
+- [x] Persistence tests proving data survives app restart.
 
 ### Success Criteria
-- [ ] Backend fully supports board CRUD/move operations for MVP user flow.
-- [ ] DB auto-creation and migrations (if any) are reliable locally.
+- [x] Backend fully supports board CRUD/move operations for MVP user flow.
+- [x] DB auto-creation and migrations (if any) are reliable locally.
 
 ## Part 7: Frontend + Backend Persistence
 

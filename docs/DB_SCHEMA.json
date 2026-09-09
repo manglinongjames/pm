@@ -1,0 +1,298 @@
+{
+  "schemaVersion": "1.0.0",
+  "database": "sqlite",
+  "purpose": "Project Management MVP Kanban persistence",
+  "assumptions": {
+    "mvpSingleBoardPerUser": true,
+    "futureMultiUser": true
+  },
+  "tables": [
+    {
+      "name": "users",
+      "description": "Application users. MVP signs in with one hardcoded account but schema supports multiple users.",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        {
+          "name": "username",
+          "type": "TEXT",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "name": "password_hash",
+          "type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "name": "boards",
+      "description": "Exactly one board per user in MVP. Enforced by UNIQUE(user_id).",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreignKey": {
+            "table": "users",
+            "column": "id",
+            "onDelete": "CASCADE"
+          }
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "My Board"
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "constraints": [
+        {
+          "type": "UNIQUE",
+          "columns": [
+            "user_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "columns",
+      "description": "Kanban columns with fixed count in MVP and editable title.",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        {
+          "name": "board_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreignKey": {
+            "table": "boards",
+            "column": "id",
+            "onDelete": "CASCADE"
+          }
+        },
+        {
+          "name": "key",
+          "type": "TEXT",
+          "nullable": false,
+          "description": "Stable identifier such as backlog/discovery/progress/review/done"
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "position",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "constraints": [
+        {
+          "type": "UNIQUE",
+          "columns": [
+            "board_id",
+            "key"
+          ]
+        },
+        {
+          "type": "UNIQUE",
+          "columns": [
+            "board_id",
+            "position"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cards",
+      "description": "Cards ordered inside columns.",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        {
+          "name": "column_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreignKey": {
+            "table": "columns",
+            "column": "id",
+            "onDelete": "CASCADE"
+          }
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "details",
+          "type": "TEXT",
+          "nullable": false,
+          "default": ""
+        },
+        {
+          "name": "position",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "constraints": [
+        {
+          "type": "UNIQUE",
+          "columns": [
+            "column_id",
+            "position"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "chat_messages",
+      "description": "Optional history for AI interactions and replayable context.",
+      "optional": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        {
+          "name": "board_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreignKey": {
+            "table": "boards",
+            "column": "id",
+            "onDelete": "CASCADE"
+          }
+        },
+        {
+          "name": "role",
+          "type": "TEXT",
+          "nullable": false,
+          "description": "user or assistant"
+        },
+        {
+          "name": "message",
+          "type": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    }
+  ],
+  "indexes": [
+    {
+      "name": "idx_boards_user_id",
+      "table": "boards",
+      "columns": [
+        "user_id"
+      ]
+    },
+    {
+      "name": "idx_columns_board_id_position",
+      "table": "columns",
+      "columns": [
+        "board_id",
+        "position"
+      ]
+    },
+    {
+      "name": "idx_cards_column_id_position",
+      "table": "cards",
+      "columns": [
+        "column_id",
+        "position"
+      ]
+    },
+    {
+      "name": "idx_chat_messages_board_id_created_at",
+      "table": "chat_messages",
+      "columns": [
+        "board_id",
+        "created_at"
+      ],
+      "optional": true
+    }
+  ]
+}

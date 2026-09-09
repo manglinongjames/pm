@@ -195,6 +195,51 @@
 			"label": "pm-part4-regression-e2e-rerun",
 			"type": "shell",
 			"command": "cd frontend && npm run test:e2e"
+		},
+		{
+			"label": "pm-validate-db-schema-json",
+			"type": "shell",
+			"command": "py -m json.tool docs/DB_SCHEMA.json > NUL"
+		},
+		{
+			"label": "pm-validate-board-contract-json",
+			"type": "shell",
+			"command": "py -m json.tool docs/BOARD_JSON_CONTRACT.json > NUL"
+		},
+		{
+			"label": "pm-validate-json-explicit",
+			"type": "shell",
+			"command": "py -c \"import json;json.load(open('docs/DB_SCHEMA.json','r',encoding='utf-8'));json.load(open('docs/BOARD_JSON_CONTRACT.json','r',encoding='utf-8'));print('JSON_OK')\""
+		},
+		{
+			"label": "pm-part6-backend-tests",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-part6-install-backend-deps",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m pip install 'httpx2>=0.28.1'"
+		},
+		{
+			"label": "pm-part6-backend-tests-rerun",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-part6-backend-tests-rerun-2",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-part6-backend-tests-rerun-3",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-part6-backend-tests-rerun-4",
+			"type": "shell",
+			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
 		}
 	]
 }
