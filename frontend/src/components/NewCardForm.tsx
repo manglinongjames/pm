@@ -3,21 +3,29 @@ import { useState, type FormEvent } from "react";
 const initialFormState = { title: "", details: "" };
 
 type NewCardFormProps = {
-  onAdd: (title: string, details: string) => void;
+  onAdd: (title: string, details: string) => Promise<void> | void;
+  isDisabled?: boolean;
 };
 
-export const NewCardForm = ({ onAdd }: NewCardFormProps) => {
+export const NewCardForm = ({ onAdd, isDisabled = false }: NewCardFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formState, setFormState] = useState(initialFormState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!formState.title.trim()) {
       return;
     }
-    onAdd(formState.title.trim(), formState.details.trim());
-    setFormState(initialFormState);
-    setIsOpen(false);
+
+    setIsSubmitting(true);
+    try {
+      await onAdd(formState.title.trim(), formState.details.trim());
+      setFormState(initialFormState);
+      setIsOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -32,6 +40,7 @@ export const NewCardForm = ({ onAdd }: NewCardFormProps) => {
             placeholder="Card title"
             className="w-full rounded-xl border border-[var(--stroke)] bg-white px-3 py-2 text-sm font-medium text-[var(--navy-dark)] outline-none transition focus:border-[var(--primary-blue)]"
             required
+            disabled={isDisabled || isSubmitting}
           />
           <textarea
             value={formState.details}
@@ -41,10 +50,12 @@ export const NewCardForm = ({ onAdd }: NewCardFormProps) => {
             placeholder="Details"
             rows={3}
             className="w-full resize-none rounded-xl border border-[var(--stroke)] bg-white px-3 py-2 text-sm text-[var(--gray-text)] outline-none transition focus:border-[var(--primary-blue)]"
+            disabled={isDisabled || isSubmitting}
           />
           <div className="flex items-center gap-2">
             <button
               type="submit"
+              disabled={isDisabled || isSubmitting}
               className="rounded-full bg-[var(--secondary-purple)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:brightness-110"
             >
               Add card
@@ -55,6 +66,7 @@ export const NewCardForm = ({ onAdd }: NewCardFormProps) => {
                 setIsOpen(false);
                 setFormState(initialFormState);
               }}
+              disabled={isSubmitting}
               className="rounded-full border border-[var(--stroke)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--gray-text)] transition hover:text-[var(--navy-dark)]"
             >
               Cancel
@@ -65,6 +77,7 @@ export const NewCardForm = ({ onAdd }: NewCardFormProps) => {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
+          disabled={isDisabled}
           className="w-full rounded-full border border-dashed border-[var(--stroke)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--primary-blue)] transition hover:border-[var(--primary-blue)]"
         >
           Add a card

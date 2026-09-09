@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useEffect, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { Card, Column } from "@/lib/kanban";
@@ -11,6 +12,7 @@ type KanbanColumnProps = {
   onRename: (columnId: string, title: string) => void;
   onAddCard: (columnId: string, title: string, details: string) => void;
   onDeleteCard: (columnId: string, cardId: string) => void;
+  isBusy?: boolean;
 };
 
 export const KanbanColumn = ({
@@ -19,8 +21,26 @@ export const KanbanColumn = ({
   onRename,
   onAddCard,
   onDeleteCard,
+  isBusy = false,
 }: KanbanColumnProps) => {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
+  const [draftTitle, setDraftTitle] = useState(column.title);
+
+  useEffect(() => {
+    setDraftTitle(column.title);
+  }, [column.title]);
+
+  const commitTitle = () => {
+    const trimmed = draftTitle.trim();
+    if (!trimmed) {
+      setDraftTitle(column.title);
+      return;
+    }
+
+    if (trimmed !== column.title) {
+      onRename(column.id, trimmed);
+    }
+  };
 
   return (
     <section
@@ -40,10 +60,18 @@ export const KanbanColumn = ({
             </span>
           </div>
           <input
-            value={column.title}
-            onChange={(event) => onRename(column.id, event.target.value)}
+            value={draftTitle}
+            onChange={(event) => setDraftTitle(event.target.value)}
+            onBlur={commitTitle}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                commitTitle();
+              }
+            }}
             className="mt-3 w-full bg-transparent font-display text-lg font-semibold text-[var(--navy-dark)] outline-none"
             aria-label="Column title"
+            disabled={isBusy}
           />
         </div>
       </div>
@@ -54,6 +82,7 @@ export const KanbanColumn = ({
               key={card.id}
               card={card}
               onDelete={(cardId) => onDeleteCard(column.id, cardId)}
+              disabled={isBusy}
             />
           ))}
         </SortableContext>
@@ -65,6 +94,7 @@ export const KanbanColumn = ({
       </div>
       <NewCardForm
         onAdd={(title, details) => onAddCard(column.id, title, details)}
+        isDisabled={isBusy}
       />
     </section>
   );

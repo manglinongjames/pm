@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import clsx from "clsx";
 import {
   DndContext,
   DragOverlay,
@@ -13,17 +14,52 @@ import {
 } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
 import { KanbanCardPreview } from "@/components/KanbanCardPreview";
-import { createId, initialData, moveCard, type BoardData } from "@/lib/kanban";
+import { createId, initialData, moveCard, type BoardData, type Column } from "@/lib/kanban";
 
 type KanbanBoardProps = {
   board?: BoardData;
-  onBoardChange?: (board: BoardData) => void;
+  isMutating?: boolean;
+  onRenameColumn?: (columnId: string, title: string) => Promise<void> | void;
+  onAddCard?: (
+    columnId: string,
+    title: string,
+    details: string
+  ) => Promise<void> | void;
+  onDeleteCard?: (columnId: string, cardId: string) => Promise<void> | void;
+  onMoveCard?: (
+    cardId: string,
+    toColumnId: string,
+    toPosition: number
+  ) => Promise<void> | void;
 };
 
-export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
+const findCardLocation = (columns: Column[], cardId: string) => {
+  for (const column of columns) {
+    const index = column.cardIds.indexOf(cardId);
+    if (index !== -1) {
+      return {
+        columnId: column.id,
+        position: index,
+      };
+    }
+  }
+
+  return null;
+};
+
+export const KanbanBoard = ({
+  board,
+  isMutating = false,
+  onRenameColumn,
+  onAddCard,
+  onDeleteCard,
+  onMoveCard,
+}: KanbanBoardProps) => {
   const [internalBoard, setInternalBoard] = useState<BoardData>(() => initialData);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [optimisticColumns, setOptimisticColumns] = useState<Column[] | null>(null);
   const currentBoard = board ?? internalBoard;
+  const visibleColumns = optimisticColumns ?? currentBoard.columns;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -33,14 +69,11 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
 
   const cardsById = useMemo(() => currentBoard.cards, [currentBoard.cards]);
 
-  const setBoardState = (updater: (previous: BoardData) => BoardData) => {
-    if (board) {
-      if (onBoardChange) {
-        onBoardChange(updater(board));
-      }
-      return;
-    }
+  useEffect(() => {
+    setOptimisticColumns(null);
+  }, [currentBoard.columns]);
 
+  const setBoardState = (updater: (previous: BoardData) => BoardData) => {
     setInternalBoard(updater);
   };
 
@@ -56,13 +89,47 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
       return;
     }
 
+    const activeId = active.id as string;
+    const overId = over.id as string;
+
+    const beforeLocation = findCardLocation(visibleColumns, activeId);
+    const movedColumns = moveCard(visibleColumns, activeId, overId);
+    const afterLocation = findCardLocation(movedColumns, activeId);
+
+    if (!beforeLocation || !afterLocation) {
+      return;
+    }
+
+    const unchanged =
+      beforeLocation.columnId === afterLocation.columnId &&
+      beforeLocation.position === afterLocation.position;
+
+    if (unchanged) {
+      return;
+    }
+
+    if (onMoveCard) {
+      setOptimisticColumns(movedColumns);
+      Promise.resolve(
+        onMoveCard(activeId, afterLocation.columnId, afterLocation.position)
+      ).finally(() => {
+        setOptimisticColumns(null);
+      });
+      return;
+    }
+
     setBoardState((prev) => ({
       ...prev,
-      columns: moveCard(prev.columns, active.id as string, over.id as string),
+      columns: movedColumns,
     }));
   };
 
   const handleRenameColumn = (columnId: string, title: string) => {
+    if (onRenameColumn) {
+      void onRenameColumn(columnId, title);
+      return;
+    }
+
     setBoardState((prev) => ({
       ...prev,
       columns: prev.columns.map((column) =>
@@ -72,6 +139,11 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
   };
 
   const handleAddCard = (columnId: string, title: string, details: string) => {
+    if (onAddCard) {
+      void onAddCard(columnId, title, details);
+      return;
+    }
+
     const id = createId("card");
     setBoardState((prev) => ({
       ...prev,
@@ -88,6 +160,11 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
   };
 
   const handleDeleteCard = (columnId: string, cardId: string) => {
+    if (onDeleteCard) {
+      void onDeleteCard(columnId, cardId);
+      return;
+    }
+
     setBoardState((prev) => {
       return {
         ...prev,
@@ -138,7 +215,7 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            {currentBoard.columns.map((column) => (
+            {visibleColumns.map((column) => (
               <div
                 key={column.id}
                 className="flex items-center gap-2 rounded-full border border-[var(--stroke)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--navy-dark)]"
@@ -156,8 +233,13 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <section className="grid gap-6 lg:grid-cols-5">
-            {currentBoard.columns.map((column) => (
+          <section
+            className={clsx(
+              "grid gap-6 lg:grid-cols-5",
+              isMutating && "pointer-events-none opacity-85"
+            )}
+          >
+            {visibleColumns.map((column) => (
               <KanbanColumn
                 key={column.id}
                 column={column}
@@ -165,6 +247,7 @@ export const KanbanBoard = ({ board, onBoardChange }: KanbanBoardProps) => {
                 onRename={handleRenameColumn}
                 onAddCard={handleAddCard}
                 onDeleteCard={handleDeleteCard}
+                isBusy={isMutating}
               />
             ))}
           </section>

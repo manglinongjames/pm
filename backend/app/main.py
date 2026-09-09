@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -58,6 +59,13 @@ class MoveCardBody(BaseModel):
 
 def create_app(frontend_dir: Path | None = None, db_path: Path | None = None) -> FastAPI:
     app = FastAPI(title="Project Management MVP API")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     db_file = (db_path or resolve_db_path()).resolve()
     initialize_database(db_file)
 

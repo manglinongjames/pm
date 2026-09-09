@@ -111,19 +111,19 @@ This plan is the execution checklist for the MVP. Work must stay inside stated r
 ## Part 7: Frontend + Backend Persistence
 
 ### Checklist
-- [ ] Replace in-memory frontend board mutations with backend API calls.
-- [ ] Add loading and error handling states without adding extra features.
-- [ ] Ensure UI refreshes from persisted backend state after mutations.
-- [ ] Keep local UX responsive and consistent.
+- [x] Replace in-memory frontend board mutations with backend API calls.
+- [x] Add loading and error handling states without adding extra features.
+- [x] Ensure UI refreshes from persisted backend state after mutations.
+- [x] Keep local UX responsive and consistent.
 
 ### Tests
-- [ ] Frontend unit tests for API client and state transitions.
-- [ ] Integration tests for create/edit/delete/move via API mocks or test backend.
-- [ ] E2E tests verifying data persists across page reload.
+- [x] Frontend unit tests for API client and state transitions.
+- [x] Integration tests for create/edit/delete/move via API mocks or test backend.
+- [x] E2E tests verifying data persists across page reload.
 
 ### Success Criteria
-- [ ] Board behavior is persistent, not demo-only.
-- [ ] Existing drag/drop and edit flows still behave correctly.
+- [x] Board behavior is persistent, not demo-only.
+- [x] Existing drag/drop and edit flows still behave correctly.
 
 ## Part 8: OpenRouter Connectivity
 
