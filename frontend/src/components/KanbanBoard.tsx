@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import {
+  closestCenter,
   DndContext,
   DragOverlay,
   PointerSensor,
   useSensor,
   useSensors,
-  closestCorners,
   type DragEndEvent,
+  type DragOverEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
@@ -58,6 +59,7 @@ export const KanbanBoard = ({
   const [internalBoard, setInternalBoard] = useState<BoardData>(() => initialData);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const [optimisticColumns, setOptimisticColumns] = useState<Column[] | null>(null);
+  const lastOverId = useRef<string | null>(null);
   const currentBoard = board ?? internalBoard;
   const visibleColumns = optimisticColumns ?? currentBoard.columns;
 
@@ -81,16 +83,29 @@ export const KanbanBoard = ({
     setActiveCardId(event.active.id as string);
   };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    const activeId = event.active.id as string;
+    const overId = event.over?.id;
+    if (overId && overId !== activeId) {
+      lastOverId.current = overId as string;
+    }
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveCardId(null);
 
-    if (!over || active.id === over.id) {
+    const activeId = active.id as string;
+    const fallbackOverId =
+      lastOverId.current && lastOverId.current !== activeId
+        ? lastOverId.current
+        : null;
+    const overId = (over?.id as string | undefined) ?? fallbackOverId;
+    lastOverId.current = null;
+
+    if (!overId || activeId === overId) {
       return;
     }
-
-    const activeId = active.id as string;
-    const overId = over.id as string;
 
     const beforeLocation = findCardLocation(visibleColumns, activeId);
     const movedColumns = moveCard(visibleColumns, activeId, overId);
@@ -229,8 +244,9 @@ export const KanbanBoard = ({
 
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCorners}
+          collisionDetection={closestCenter}
           onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
           <section

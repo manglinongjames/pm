@@ -128,19 +128,19 @@ This plan is the execution checklist for the MVP. Work must stay inside stated r
 ## Part 8: OpenRouter Connectivity
 
 ### Checklist
-- [ ] Add backend AI client using OPENROUTER_API_KEY from .env.
-- [ ] Configure model openai/gpt-oss-120b for requests.
-- [ ] Add a simple internal connectivity check path using prompt 2+2.
-- [ ] Implement clear handling for missing key and upstream errors.
+- [x] Add backend AI client using OPENROUTER_API_KEY from .env.
+- [x] Configure model openai/gpt-oss-120b for requests.
+- [x] Add a simple internal connectivity check path using prompt 2+2.
+- [x] Implement clear handling for missing key and upstream errors.
 
 ### Tests
-- [ ] Unit tests for request formatting and error mapping.
-- [ ] Connectivity test against OpenRouter returns expected response format.
-- [ ] Negative test: missing/invalid key returns controlled error.
+- [x] Unit tests for request formatting and error mapping.
+- [x] Connectivity test against OpenRouter returns expected response format.
+- [x] Negative test: missing/invalid key returns controlled error.
 
 ### Success Criteria
-- [ ] Backend can successfully complete a basic OpenRouter call.
-- [ ] Failures are explicit and debuggable.
+- [x] Backend can successfully complete a basic OpenRouter call.
+- [x] Failures are explicit and debuggable.
 
 ## Part 9: Structured AI Board Operations
 

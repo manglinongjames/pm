@@ -219,6 +219,33 @@ const login = async (page: Page, navigate = true) => {
   await page.getByRole("button", { name: /sign in/i }).click();
 };
 
+const dragCardToColumn = async (
+  page: Page,
+  cardTestId: string,
+  columnTestId: string
+) => {
+  const card = page.getByTestId(cardTestId);
+  const column = page.getByTestId(columnTestId);
+
+  const cardBox = await card.boundingBox();
+  const columnBox = await column.boundingBox();
+  if (!cardBox || !columnBox) {
+    throw new Error("Unable to resolve drag coordinates.");
+  }
+
+  await page.mouse.move(
+    cardBox.x + cardBox.width / 2,
+    cardBox.y + cardBox.height / 2
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    columnBox.x + columnBox.width / 2,
+    columnBox.y + 110,
+    { steps: 18 }
+  );
+  await page.mouse.up();
+};
+
 test("logs in, loads the kanban board, and logs out", async ({ page }) => {
   await setupMockApi(page);
   await login(page);
@@ -258,28 +285,27 @@ test("adds a card and keeps it after reload", async ({ page }) => {
 test("moves a card between columns", async ({ page }) => {
   await setupMockApi(page);
   await login(page);
-  const card = page.getByTestId("card-card-1");
   const targetColumn = page.getByTestId("column-col-review");
-  const cardBox = await card.boundingBox();
-  const columnBox = await targetColumn.boundingBox();
-  if (!cardBox || !columnBox) {
-    throw new Error("Unable to resolve drag coordinates.");
-  }
-
-  await page.mouse.move(
-    cardBox.x + cardBox.width / 2,
-    cardBox.y + cardBox.height / 2
-  );
-  await page.mouse.down();
-  await page.mouse.move(
-    columnBox.x + columnBox.width / 2,
-    columnBox.y + 120,
-    { steps: 12 }
-  );
-  await page.mouse.up();
+  await dragCardToColumn(page, "card-card-1", "column-col-review");
   await expect(targetColumn.getByTestId("card-card-1")).toBeVisible();
 
   await page.reload();
   await login(page, false);
   await expect(page.getByTestId("column-col-review").getByTestId("card-card-1")).toBeVisible();
+});
+
+test("keeps drag-and-drop reliable across repeated moves", async ({ page }) => {
+  await setupMockApi(page);
+  await login(page);
+
+  const reviewColumn = page.getByTestId("column-col-review");
+  const backlogColumn = page.getByTestId("column-col-backlog");
+
+  for (let index = 0; index < 12; index += 1) {
+    await dragCardToColumn(page, "card-card-1", "column-col-review");
+    await expect(reviewColumn.getByTestId("card-card-1")).toBeVisible();
+
+    await dragCardToColumn(page, "card-card-1", "column-col-backlog");
+    await expect(backlogColumn.getByTestId("card-card-1")).toBeVisible();
+  }
 });

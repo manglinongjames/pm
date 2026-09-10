@@ -240,6 +240,26 @@
 			"label": "pm-part6-backend-tests-rerun-4",
 			"type": "shell",
 			"command": "/e/Trainings/Agent\\ AI/projects/pm/.venv/Scripts/python.exe -m unittest discover backend/tests -v"
+		},
+		{
+			"label": "pm-dnd-stress-pre-fix",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e -- --grep \"moves a card between columns\" --repeat-each=20 --workers=1"
+		},
+		{
+			"label": "pm-dnd-repro-reliability-pre-fix",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e -- --grep \"keeps drag-and-drop reliable across repeated moves\" --workers=1"
+		},
+		{
+			"label": "pm-dnd-repro-reliability-post-fix",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e -- --grep \"keeps drag-and-drop reliable across repeated moves\" --workers=1"
+		},
+		{
+			"label": "pm-dnd-repro-reliability-post-fix-2",
+			"type": "shell",
+			"command": "cd frontend && npm run test:e2e -- --grep \"keeps drag-and-drop reliable across repeated moves\" --workers=1"
 		}
 	]
 }

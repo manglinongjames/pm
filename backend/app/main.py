@@ -18,6 +18,14 @@ from app.kanban_store import (
     rename_column_for_user,
     update_card_for_user,
 )
+from app.openrouter_client import (
+    OpenRouterAuthError,
+    OpenRouterClient,
+    OpenRouterConfigError,
+    OpenRouterRateLimitError,
+    OpenRouterUpstreamError,
+    resolve_openrouter_api_key,
+)
 
 STATIC_DIR = Path(__file__).parent / "static"
 DEFAULT_FRONTEND_DIR = STATIC_DIR / "frontend"
@@ -148,6 +156,37 @@ def create_app(frontend_dir: Path | None = None, db_path: Path | None = None) ->
             )
         except Exception as error:
             raise handle_store_error(error) from error
+
+    @app.post("/api/users/{username}/ai/check")
+    def check_openrouter_connectivity(username: str) -> dict:
+        _ = username
+
+        api_key = resolve_openrouter_api_key()
+        try:
+            client = OpenRouterClient(api_key=api_key)
+            result = client.check_connectivity()
+            return {
+                "ok": True,
+                "provider": "openrouter",
+                **result,
+            }
+        except OpenRouterConfigError as error:
+            raise HTTPException(status_code=503, detail=str(error)) from error
+        except OpenRouterAuthError as error:
+            raise HTTPException(
+                status_code=502,
+                detail=f"OpenRouter authentication failed (status {error.status_code}).",
+            ) from error
+        except OpenRouterRateLimitError as error:
+            raise HTTPException(
+                status_code=502,
+                detail=f"OpenRouter rate limit reached (status {error.status_code}).",
+            ) from error
+        except OpenRouterUpstreamError as error:
+            raise HTTPException(
+                status_code=502,
+                detail=f"OpenRouter request failed ({error.status_code}): {error}",
+            ) from error
 
     frontend_root = (frontend_dir or resolve_frontend_dir()).resolve()
     if frontend_root.exists() and (frontend_root / "index.html").exists():

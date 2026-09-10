@@ -1,0 +1,63 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "Log out" [ref=e4]
+    - main [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - paragraph [ref=e10]: Single Board Kanban
+            - heading "Kanban Studio" [level=1] [ref=e11]
+            - paragraph [ref=e12]: Keep momentum visible. Rename columns, drag cards between stages, and capture quick notes without getting buried in settings.
+          - generic [ref=e13]:
+            - paragraph [ref=e14]: Focus
+            - paragraph [ref=e15]: One board. Five columns. Zero clutter.
+        - generic [ref=e16]:
+          - generic [ref=e17]: Backlog
+          - generic [ref=e19]: Discovery
+          - generic [ref=e21]: In Progress
+          - generic [ref=e23]: Review
+          - generic [ref=e25]: Done
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e30]:
+            - generic [ref=e33]: 0 cards
+            - textbox "Column title" [ref=e34]: Backlog
+          - generic [ref=e36]: Drop a card here
+          - button "Add a card" [ref=e38]
+        - generic [ref=e39]:
+          - generic [ref=e41]:
+            - generic [ref=e44]: 0 cards
+            - textbox "Column title" [ref=e45]: Discovery
+          - generic [ref=e47]: Drop a card here
+          - button "Add a card" [ref=e49]
+        - generic [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e55]: 0 cards
+            - textbox "Column title" [ref=e56]: In Progress
+          - generic [ref=e58]: Drop a card here
+          - button "Add a card" [ref=e60]
+        - generic [ref=e61]:
+          - generic [ref=e63]:
+            - generic [ref=e66]: 1 cards
+            - textbox "Column title" [ref=e67]: Review
+          - button "Card 1 Initial card Delete Card 1" [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - heading "Card 1" [level=4] [ref=e72]
+                - paragraph [ref=e73]: Initial card
+              - button "Delete Card 1" [ref=e74]: Remove
+          - button "Add a card" [ref=e76]
+        - generic [ref=e77]:
+          - generic [ref=e79]:
+            - generic [ref=e82]: 0 cards
+            - textbox "Column title" [ref=e83]: Done
+          - generic [ref=e85]: Drop a card here
+          - button "Add a card" [ref=e87]
+      - status [ref=e88]: Draggable item card-1 was dropped over droppable area col-review
+  - button "Open Next.js Dev Tools" [ref=e94] [cursor=pointer]:
+    - img [ref=e95]
+  - alert [ref=e98]
+```
